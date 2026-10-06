@@ -1,0 +1,13 @@
+# A small eval: 8 fresh-condition episodes on 4 envs, deterministic actions.
+#   python scripts/eval.py --run hur/template_demo/<run> --eval_config configs/eval/quick.yaml
+eval:
+  num_rollouts: 8
+
+task:
+  cfg:
+    scene:
+      num_envs: 4
+
+wrappers:
+  efficient_reset:
+    enabled: false

@@ -1,0 +1,24 @@
+# The MATCH variant of hybrid_fragile.yaml: the selection-conditioned distribution plus
+# the supervised selection loss.
+#
+# REQUIRES the package's MATCH port (model.actor.selection_distribution and the
+# supervised_selection loss) -- this config fails loudly at load until that lands.
+base: hybrid_fragile.yaml
+
+wandb:
+  group: match_fragile
+
+model:
+  actor:
+    selection_distribution: match
+
+sac:
+  # match: 4 free pose dims + 3 gated (one per axis) = 7 effective continuous dims.
+  # V calls this a placeholder to re-tune per formulation.
+  target_entropy: -3.5
+
+losses:
+  terms:
+    - name: supervised_selection
+      target: policy
+      weight: 1.0
