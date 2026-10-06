@@ -49,9 +49,8 @@ python scripts/debug.py --run hur/template_demo/<run_name>
 python scripts/debug.py --run hur/template_demo/<run_name> --resets --hold_seconds 2
 ```
 
-`configs/experiments/match_fragile.yaml` is the MATCH variant (selection-conditioned
-distribution + supervised selection loss); it needs the package's MATCH port and fails
-loudly at config load until that lands.
+`configs/experiments/match_fragile.yaml` is the MATCH variant: the selection-conditioned
+distribution plus the supervised selection loss.
 
 ## Config sections this project adds
 
