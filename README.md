@@ -27,6 +27,8 @@ from this template.
 | config sections (`@dataclass` + `validate`) | `my_project/cfg.py` | `register_section` in `setup()` |
 | auxiliary losses (`AuxLoss` subclasses) | `my_project/losses.py` | `@register_loss`, imported in `setup()` |
 | experiment YAMLs (`base:` chains, override only what differs) | `configs/` | `--config` / `--eval_config` |
+| cluster resources (the `hpc` section: account, partitions, walltime, image) | `configs/base/hpc.yaml` | chained under every experiment |
+| SLURM submitters (thin callers of `robonuke_rl_core.hpc`) | `launchers/` | — |
 | overlays / model architectures | same pattern: register in `setup()` | package CLAUDE.md recipes |
 
 The demo task (`Isaac-Forge-DemoPegInsert-Direct-v0`) subclasses Isaac Lab's Forge peg
@@ -51,6 +53,34 @@ python scripts/debug.py --run hur/template_demo/<run_name> --resets --hold_secon
 
 `configs/experiments/match_fragile.yaml` is the MATCH variant: the selection-conditioned
 distribution plus the supervised selection loss.
+
+## Run on the cluster
+
+The launchers submit SLURM + Apptainer jobs from a login node — a light python is enough
+(omegaconf + pyyaml; wandb only for `launch_eval`'s run query). Resources come from the
+`hpc` config section (`configs/base/hpc.yaml`, overridable per experiment or on the CLI);
+the field reference is the package README. Names derive from wandb: `--project` and
+`--group_prefix` are required, group = `{group_prefix}_{config_stem}` (sweeps append
+`_{label}-{value}`), the SLURM job name is the group, runs are `{group}_a{i}`.
+
+```bash
+# one job per experiment yaml in the folder
+python launchers/launch_train.py configs/experiments --project template_demo \
+    --group_prefix oct06 --tag demo
+
+# one job per swept value (group oct06_hybrid_fragile_lr-1.0e-4, ...)
+python launchers/launch_sweep.py configs/experiments/hybrid_fragile.yaml \
+    --project template_demo --group_prefix oct06 \
+    --sweep_param sac.actor_lr --label lr --value 1.0e-4 --value 3.0e-4
+
+# one eval job per (trained run x eval config), selected by group
+python launchers/launch_eval.py --eval_config configs/eval/quick.yaml \
+    --project template_demo --group oct06_hybrid_fragile
+```
+
+`--dry_run` on any of them prints the exact `sbatch` commands and submits nothing.
+`WANDB_API_KEY` is read from your login shell (never a config field); without it the job
+logs offline instead of crashing.
 
 ## Config sections this project adds
 

@@ -33,6 +33,13 @@ Never create a new conda env; never vendor a copy of the package into this repo.
   experiment, `base:` chained, only non-defaults set; `configs/eval/` — eval conditions.
 * `scripts/` — thin callers of `robonuke_rl_core.{train,eval,debug}.main(setup=setup)`.
   Do not add logic here; flow fixes belong in the package.
+* `launchers/` — thin callers of `robonuke_rl_core.hpc.launch_{train,sweep,eval}.main()`,
+  run from the project root on a cluster login node. No `setup` hook: the submitters never
+  load the full config. Cluster resources are the `hpc` config section —
+  `configs/base/hpc.yaml` holds the cluster-wide values and sits at the bottom of every
+  experiment's `base` chain; an experiment overrides only what differs (`hpc.time`,
+  `hpc.mem`). The naming rules and field reference are in the package CLAUDE.md ("HPC
+  launch") and README.
 
 ## Add things
 

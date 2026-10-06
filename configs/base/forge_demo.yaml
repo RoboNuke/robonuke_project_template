@@ -1,4 +1,6 @@
 # Base config every experiment in this project shares.
+base: hpc.yaml
+
 task:
   name: Isaac-Forge-DemoPegInsert-Direct-v0
   cfg:
