@@ -6,12 +6,7 @@ from this template.
 
 ## Start a project
 
-0. Once, if the button in step 1 is missing: this repo's GitHub page -> **Settings ->
-   General -> check "Template repository"**. That setting is what makes GitHub show
-   **Use this template** on the repo's main page (green button, next to Code).
-1. GitHub: **Use this template -> Create a new repository** -> name the new repo after
-   the project. This copies the files into a fresh repo with no shared history — it is
-   not a fork, so the new project never shows up as one.
+1. GitHub: **Use this template** -> name the new repo after the project.
 2. Rename `my_project/` to your project's name and fix the imports in `scripts/*.py`
    (`setup()` is the only place they appear).
 3. Make sure the package is installed (once, for all projects):
